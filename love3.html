@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Peehu Forever 💝 | Harsh</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Sacramento&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 30%, #2d1b69 60%, #4a148c 100%);
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        .particles {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 1;
+        }
+        
+        .particle {
+            position: absolute;
+            background: radial-gradient(circle, rgba(255,182,193,0.8) 0%, rgba(255,105,180,0.4) 70%);
+            border-radius: 50%;
+            animation: float 25s infinite linear;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+        
+        .hero, .content {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem 1rem;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(25px);
+            border-radius: 30px;
+            padding: 4rem 3rem;
+            max-width: 900px;
+            width: 90%;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        
+        .title {
+            font-family: 'Sacramento', cursive;
+            font-size: 5rem;
+            background: linear-gradient(45deg, #d81b60, #8e24aa, #5e35b1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 15px rgba(216,27,96,0.6)); }
+            to { filter: drop-shadow(0 0 25px rgba(142,36,170,0.8)); }
+        }
+        
+        .subtitle {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: #2c3e50;
+            margin-bottom: 2rem;
+            font-style: italic;
+        }
+        
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            justify-content: center;
+            margin: 3rem 0;
+        }
+        
+        .btn {
+            padding: 18px 35px;
+            border: none;
+            border-radius: 50px;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            min-width: 220px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #d81b60, #ad1457);
+            color: white;
+            box-shadow: 0 15px 35px rgba(216,27,96,0.4);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(45deg, #8e24aa, #6a1b9a);
+            color: white;
+            box-shadow: 0 15px 35px rgba(142,36,170,0.4);
+        }
+        
+        .btn:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+        }
+        
+        .content {
+            display: none;
+            animation: slideIn 1s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .nav-back {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            z-index: 100;
+            background: rgba(255,255,255,0.95);
+            border: none;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-family: 'Playfair Display', serif;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            font-weight: 500;
+        }
+        
+        /* Photo Gallery */
+        .photo-gallery {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2.5rem;
+        }
+        
+        .photo-frame {
+            position: relative;
+            width: 380px;
+            height: 380px;
+            border-radius: 25px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.5s ease;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            border: 4px solid rgba(255,255,255,0.5);
+        }
+        
+        .photo-frame:hover {
+            transform: scale(1.08) rotate(1deg);
+            box-shadow: 0 40px 80px rgba(0,0,0,0.4);
+        }
+        
+        .photo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .photo-frame:hover img {
+            transform: scale(1.12);
+        }
+        
+        .photo-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.85));
+            color: white;
+            padding: 2.5rem 2rem 1.8rem;
+            transform: translateY(100%);
+            transition: transform 0.4s ease;
+        }
+        
+        .photo-frame:hover .photo-overlay {
+            transform: translateY(0);
+        }
+        
+        .photo-title {
+            font-family: 'Sacramento', cursive;
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .title { font-size: 3.5rem; }
+            .photo-frame { width: 300px; height: 300px; }
+            .options { flex-direction: column; align-items: center; }
+            .btn { min-width: 280px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    <button class="nav-back" onclick="showHome()" style="display: none;" id="backBtn">🏠 Back Home</button>
+    
+    <!-- HOME -->
+    <section class="hero" id="home">
+        <div class="container">
+            <h1 class="title">My Dearest Peehu</h1>
+            <h2 class="subtitle">A Love Treasure from Harsh 💕</h2>
+            <div style="font-size: 8rem; margin: 2rem 0; animation: sway 4s ease-in-out infinite;">🌹💖🌹</div>
+            <p style="font-size: 1.5rem; color: #4a5568; margin-bottom: 3rem; font-style: italic;">
+                Click to explore our beautiful journey together...
+            </p>
+            <div class="options">
+                <button class="btn btn-primary" onclick="showLoveLetter()">💌 Love Letter</button>
+                <button class="btn btn-secondary" onclick="showPhotos()">📸 Our Memories</button>
+                <button class="btn btn-primary" onclick="showPoem()">✨ Love Poem</button>
+                <button class="btn btn-secondary" onclick="showPromise()">💍 Our Promise</button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- LOVE LETTER -->
+    <section id="loveLetter" class="content">
+        <div class="container">
+            <h2 style="font-family: 'Sacramento', cursive; font-size: 4rem; color: #d81b60; margin-bottom: 2rem;">
+                My Beautiful Peehu,
+            </h2>
+            <div style="background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%); padding: 3rem; border-radius: 25px; border-left: 8px solid #d81b60;">
+                <p style="font-size: 1.5rem; line-height: 1.9; margin-bottom: 2rem;">
+                    From the moment I saw your radiant smile, I knew you were my forever. Your laughter is my favorite song,
+                    your touch my greatest comfort. Every day with you feels like living in a beautiful dream.
+                </p>
+                <p style="font-size: 1.5rem; line-height: 1.9;">
+                    Peehu, you are my heart, my home, my everything. I promise to love you more fiercely with every sunrise,
+                    to hold your dreams as my own, and to build our beautiful forever together.
+                </p>
+                <div style="margin-top: 3rem; font-family: 'Sacramento', cursive; font-size: 2.5rem; color: #8e24aa; text-align: right; font-style: italic;">
+                    With all my love forever,<br>Harsh 💖
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- PHOTOS -->
+    <section id="photos" class="content">
+        <div class="container">
+            <h2 style="font-family: 'Sacramento', cursive; font-size: 4.5rem; color: #d81b60; margin-bottom: 3rem;">
+                Our Precious Memories 📸
+            </h2>
+            <div class="photo-gallery">
+                <div class="photo-frame">
+                    <img src="https://i.ibb.co/Wv98Xykp/20241220-135045.jpg" alt="Harsh & Peehu Love">
+                    <div class="photo-overlay">
+                        <div class="photo-title">Our Perfect Moment 💕</div>
+                        <div style="font-size: 1.2rem;">"You make my heart smile every time"</div>
+                    </div>
+                </div>
+                
+                <div class="photo-frame">
+                    <img src="https://i.ibb.co/Xr0vdcbS/20241220-135100.jpg" alt="Peehu's Beautiful Smile">
+                    <div class="photo-overlay">
+                        <div class="photo-title">My Beautiful Peehu ✨</div>
+                        <div style="font-size: 1.2rem;">"Your smile lights up my world"</div>
+                    </div>
+                </div>
+                
+                <div class="photo-frame">
+                    <img src="https://i.ibb.co/Jj3ym59K/20241220-135114.jpg" alt="Our Love Forever">
+                    <div class="photo-overlay">
+                        <div class="photo-title">Love in Every Glance 💖</div>
+                        <div style="font-size: 1.2rem;">"Harsh ♥️ Peehu Forever"</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- POEM -->
+    <section id="poem" class="content">
+        <div class="container">
+            <div style="background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%); padding: 4rem; border-radius: 25px;">
+                <h2 style="color: #2e7d32; font-family: 'Sacramento', cursive; font-size: 4rem; margin-bottom: 2rem;">
+                    For Peehu
+                </h2>
+                <div style="font-size: 1.7rem; line-height: 2.2; white-space: pre-line; color: #1b5e20;">
+P - My Princess with the golden smile
+E - Eyes that sparkle mile after mile
+E - Every moment makes my heart sing
+H - Holding you is everything
+U - Universe of love you bring
+
+You're my dream come true, my everything. 🌹
+                </div>
+                <div style="margin-top: 3rem; font-size: 2rem; color: #1b5e20; font-style: italic;">
+                    Forever yours, Harsh 💕
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- PROMISE -->
+    <section id="promise" class="content">
+        <div class="container">
+            <div style="background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); padding: 4rem; border-radius: 25px; border: 5px solid #ff9800;">
+                <h2 style="color: #e65100; font-family: 'Sacramento', cursive; font-size: 4rem; margin-bottom: 3rem;">
+                    Our Forever Vows 💍
+                </h2>
+                <div style="font-size: 1.6rem; line-height: 1.8; color: #bf360c;">
+                    <p><strong>❤️ I vow</strong> to love you more each day than the day before</p><br>
+                    <p><strong>🌟 I promise</strong> to support every dream in your beautiful heart</p><br>
+                    <p><strong>🤗 I commit</strong> to hold you through every storm and sunshine</p><br>
+                    <p><strong>💋 I pledge</strong> goodnight kisses for all our forever nights</p><br>
+                    <p><strong>👫 Together</strong> we will build the most beautiful life</p>
+                </div>
+                <div style="margin-top: 3rem; font-size: 2.5rem; color: #d84315; text-align: center; font-style: italic;">
+                    "Peehu, you + me = Always & Forever"
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script>
+        // Particles
+        function createParticles() {
+            const particles = document.getElementById('particles');
+            for (let i = 0; i < 80; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.width = particle.style.height = (Math.random() * 12 + 4) + 'px';
+                particle.style.animationDelay = Math.random() * 25 + 's';
+                particle.style.animationDuration = (Math.random() * 15 + 20) + 's';
+                particles.appendChild(particle);
+            }
+        }
+        
+        // Navigation Functions - NOW 100% WORKING!
+        function showHome() {
+            document.getElementById('home').style.display = 'flex';
+            document.querySelectorAll('.content').forEach(el => el.style.display = 'none');
+            document.getElementById('backBtn').style.display = 'none';
+            launchConfetti();
+        }
+        
+        function showLoveLetter() {
+            document.getElementById('home').style.display = 'none';
+            document.getElementById('loveLetter').style.display = 'flex';
+            document.getElementById('backBtn').style.display = 'block';
+            launchConfetti();
+        }
+        
+        function showPhotos() {
+            document.getElementById('home').style.display = 'none';
+            document.getElementById('photos').style.display = 'flex';
+            document.getElementById('backBtn').style.display = 'block';
+            launchConfetti();
+        }
+        
+        function showPoem() {
+            document.getElementById('home').style.display = 'none';
+            document.getElementById('poem').style.display = 'flex';
+            document.getElementById('backBtn').style.display = 'block';
+            launchConfetti();
+        }
+        
+        function showPromise() {
+            document.getElementById('home').style.display = 'none';
+            document.getElementById('promise').style.display = 'flex';
+            document.getElementById('backBtn').style.display = 'block';
+            launchConfetti();
+        }
+        
+        function launchConfetti() {
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#d81b60', '#8e24aa', '#ffecb3', '#f8bbd9', '#ffcdd2']
+            });
+        }
+        
+        // Initialize
+        window.onload = function() {
+            createParticles();
+            setInterval(() => {
+                if (Math.random() > 0.9) launch
