@@ -1,0 +1,395 @@
+bash
+
+cat > /mnt/user-data/outputs/peehu_birthday.html << 'HTMLEOF'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday Peehu 🌸</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Quicksand:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --pink:#ffb3c6;--pink2:#ff85a1;--pink3:#ff4d7d;
+  --peach:#ffe5d0;--peach2:#ffcba4;
+  --lavender:#e8d5ff;--lav2:#c9a8ff;
+  --gold:#ffd700;--cream:#fff9f5;
+  --text:#4a2040;--muted:#9b6b8a;
+}
+body{background:var(--cream);font-family:'Quicksand',sans-serif;color:var(--text);overflow-x:hidden;min-height:100vh}
+canvas#bgCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+
+.screen{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .8s ease;background:var(--cream)}
+.screen.hidden{opacity:0;pointer-events:none}
+
+#lockScreen{background:linear-gradient(135deg,#ffe0ef 0%,#f0d6ff 50%,#d6eaff 100%)}
+.lock-title{font-family:'Playfair Display',serif;font-size:2.8rem;color:var(--text);text-align:center;margin-bottom:.3rem;animation:floatY 3s ease-in-out infinite}
+.lock-sub{font-size:1rem;color:var(--muted);margin-bottom:2.5rem;text-align:center;letter-spacing:.05em}
+.key-form{display:flex;flex-direction:column;align-items:center;gap:1rem}
+.key-input{width:160px;padding:.8rem 1.2rem;text-align:center;font-size:1.4rem;letter-spacing:.4rem;border:2px solid var(--pink);border-radius:50px;background:rgba(255,255,255,.7);color:var(--text);outline:none;font-family:'Quicksand',sans-serif;transition:.3s}
+.key-input:focus{border-color:var(--pink3);box-shadow:0 0 0 4px rgba(255,133,161,.2)}
+.key-btn{padding:.7rem 2rem;background:linear-gradient(135deg,var(--pink2),var(--pink3));color:#fff;border:none;border-radius:50px;font-size:1rem;font-family:'Quicksand',sans-serif;font-weight:600;cursor:pointer;transition:.3s;letter-spacing:.05em}
+.key-btn:hover{transform:scale(1.04);box-shadow:0 4px 20px rgba(255,77,125,.35)}
+.lock-hearts{font-size:2rem;animation:pulse 1.5s ease-in-out infinite}
+.key-error{color:#e8547a;font-size:.85rem;margin-top:-.3rem;opacity:0;transition:.3s}
+.key-error.show{opacity:1}
+.floating-emoji{position:absolute;font-size:1.5rem;animation:floatRandom 6s ease-in-out infinite;opacity:.5}
+
+#countdownScreen{background:linear-gradient(160deg,#fff0f7 0%,#f5e6ff 60%,#e6f0ff 100%)}
+.cd-title{font-family:'Playfair Display',serif;font-size:2.2rem;color:var(--text);text-align:center;margin-bottom:.3rem;line-height:1.3}
+.cd-names{font-family:'Playfair Display',serif;font-style:italic;font-size:1.3rem;color:var(--pink3);margin-bottom:2rem;text-align:center}
+.cd-grid{display:flex;gap:1.2rem;margin-bottom:2rem;flex-wrap:wrap;justify-content:center}
+.cd-box{display:flex;flex-direction:column;align-items:center;background:rgba(255,255,255,.85);border:1.5px solid var(--pink);border-radius:20px;padding:1.2rem 1.5rem;min-width:90px;box-shadow:0 4px 20px rgba(255,133,161,.15);backdrop-filter:blur(4px)}
+.cd-num{font-size:3rem;font-weight:700;color:var(--pink3);line-height:1;font-family:'Playfair Display',serif;transition:.3s}
+.cd-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-top:.3rem}
+.cd-message{font-size:1rem;color:var(--muted);text-align:center;max-width:340px;line-height:1.7;margin-bottom:1.5rem}
+.cd-flower{font-size:2.5rem;animation:spin 10s linear infinite}
+
+#birthdayScreen{background:transparent;backdrop-filter:none}
+.bday-bg{position:fixed;inset:0;background:linear-gradient(135deg,#ffe0ef 0%,#ffd6ff 40%,#d6e8ff 100%);z-index:-1}
+.bday-content{display:flex;flex-direction:column;align-items:center;padding:2rem 1.5rem;width:100%;max-width:700px;z-index:10;gap:1.5rem;overflow-y:auto;max-height:100vh}
+.bday-name{font-family:'Playfair Display',serif;font-size:3rem;color:var(--text);text-align:center;animation:floatY 3s ease-in-out infinite}
+.bday-sub{font-size:1.1rem;color:var(--muted);text-align:center;line-height:1.8;max-width:380px}
+.tab-row{display:flex;gap:.8rem;flex-wrap:wrap;justify-content:center}
+.tab-btn{padding:.55rem 1.3rem;border-radius:50px;border:1.5px solid var(--pink);background:rgba(255,255,255,.7);color:var(--muted);font-family:'Quicksand',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;transition:.3s;letter-spacing:.03em}
+.tab-btn.active,.tab-btn:hover{background:linear-gradient(135deg,var(--pink),var(--pink2));color:#fff;border-color:transparent;box-shadow:0 3px 12px rgba(255,133,161,.3)}
+.panel{display:none;width:100%;animation:fadeIn .5s ease}
+.panel.active{display:block}
+
+.cake-wrap{display:flex;flex-direction:column;align-items:center;gap:1.2rem}
+.cake-svg-wrap{filter:drop-shadow(0 8px 24px rgba(255,133,161,.25));cursor:pointer;transition:.3s}
+.cake-svg-wrap:hover{transform:scale(1.03)}
+.cake-btn{padding:.75rem 2.2rem;background:linear-gradient(135deg,#ff85a1,#ff4d7d);color:#fff;border:none;border-radius:50px;font-size:1rem;font-family:'Quicksand',sans-serif;font-weight:600;cursor:pointer;letter-spacing:.05em;box-shadow:0 4px 20px rgba(255,77,125,.3);transition:.3s;animation:pulse 2s ease-in-out infinite}
+.cake-btn:hover{transform:scale(1.05)}
+.cake-hint{font-size:.85rem;color:var(--muted);text-align:center}
+
+.msg-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.msg-card{background:rgba(255,255,255,.85);border:1.5px solid var(--pink);border-radius:20px;padding:1.2rem;text-align:center;position:relative;overflow:hidden;transition:.3s}
+.msg-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(255,133,161,.2)}
+.msg-card::before{content:attr(data-emoji);position:absolute;top:.7rem;right:.8rem;font-size:1.3rem}
+.msg-card p{font-size:.88rem;color:var(--muted);line-height:1.7;font-style:italic}
+.msg-card .msg-from{margin-top:.7rem;font-size:.78rem;color:var(--pink3);font-weight:600}
+
+.photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem}
+.photo-card{border-radius:20px;overflow:hidden;position:relative;cursor:pointer;aspect-ratio:3/4;border:2px solid var(--pink)}
+.photo-card img{width:100%;height:100%;object-fit:cover;transition:.4s}
+.photo-card:hover img{transform:scale(1.06)}
+.photo-compliment{position:absolute;inset:0;background:linear-gradient(to top,rgba(255,77,125,.85) 0%,transparent 50%);display:flex;align-items:flex-end;padding:1rem;opacity:0;transition:.4s}
+.photo-card:hover .photo-compliment{opacity:1}
+.photo-compliment span{color:#fff;font-size:.85rem;font-weight:600;line-height:1.5;text-shadow:0 1px 4px rgba(0,0,0,.2)}
+
+.confetti-piece{position:fixed;width:10px;height:10px;border-radius:50%;pointer-events:none;z-index:999;animation:confettiFall linear forwards}
+
+@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+@keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes floatRandom{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-20px) rotate(10deg)}}
+@keyframes confettiFall{0%{transform:translateY(-20px) rotate(0) scale(1);opacity:1}100%{transform:translateY(110vh) rotate(720deg) scale(.5);opacity:0}}
+@keyframes candleFlicker{0%,100%{transform:scaleY(1) scaleX(1)}50%{transform:scaleY(1.08) scaleX(.92)}}
+
+#burstModal{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;background:rgba(255,200,220,.7);backdrop-filter:blur(6px);opacity:0;pointer-events:none;transition:.6s}
+#burstModal.show{opacity:1;pointer-events:all}
+.burst-card{background:#fff;border-radius:32px;padding:2.5rem 2rem;max-width:380px;width:90%;text-align:center;box-shadow:0 16px 60px rgba(255,77,125,.25);animation:floatY 3s ease-in-out infinite}
+.burst-emoji{font-size:3.5rem;margin-bottom:1rem}
+.burst-title{font-family:'Playfair Display',serif;font-size:1.8rem;color:var(--text);margin-bottom:.8rem}
+.burst-msg{font-size:.95rem;color:var(--muted);line-height:1.8;margin-bottom:1.5rem}
+.burst-close{padding:.6rem 1.8rem;background:linear-gradient(135deg,var(--pink2),var(--pink3));color:#fff;border:none;border-radius:50px;font-size:.9rem;font-family:'Quicksand',sans-serif;font-weight:600;cursor:pointer;transition:.3s}
+.burst-close:hover{transform:scale(1.04)}
+
+@media(max-width:520px){
+  .cd-grid{gap:.8rem}
+  .cd-box{min-width:72px;padding:.9rem 1rem}
+  .cd-num{font-size:2.2rem}
+  .bday-name{font-size:2rem}
+  .msg-grid{grid-template-columns:1fr}
+  .photo-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<canvas id="bgCanvas"></canvas>
+
+<!-- LOCK SCREEN -->
+<div class="screen" id="lockScreen">
+  <div class="lock-hearts">🔒💕🔒</div>
+  <div style="height:1.2rem"></div>
+  <div class="lock-title">Something Special<br>Awaits…</div>
+  <div class="lock-sub">Enter the secret key to peek inside</div>
+  <div class="key-form">
+    <input class="key-input" type="password" id="keyInput" placeholder="••••" maxlength="4">
+    <div class="key-error" id="keyError">Wrong key, try again 🙈</div>
+    <button class="key-btn" onclick="checkKey()">Unlock 🌸</button>
+  </div>
+</div>
+
+<!-- COUNTDOWN SCREEN -->
+<div class="screen hidden" id="countdownScreen">
+  <div class="cd-flower">🌸</div>
+  <div style="height:1rem"></div>
+  <div class="cd-title">Counting down to<br>someone special's day…</div>
+  <div class="cd-names">Harsh 💕 Peehu</div>
+  <div class="cd-grid">
+    <div class="cd-box"><div class="cd-num" id="cdDays">--</div><div class="cd-label">Days</div></div>
+    <div class="cd-box"><div class="cd-num" id="cdHours">--</div><div class="cd-label">Hours</div></div>
+    <div class="cd-box"><div class="cd-num" id="cdMins">--</div><div class="cd-label">Minutes</div></div>
+    <div class="cd-box"><div class="cd-num" id="cdSecs">--</div><div class="cd-label">Seconds</div></div>
+  </div>
+  <div class="cd-message">Every second brings us closer to your most magical birthday yet, Peehu 🌷 Harsh can't wait to celebrate YOU!</div>
+</div>
+
+<!-- BIRTHDAY SCREEN -->
+<div class="screen hidden" id="birthdayScreen">
+  <div class="bday-bg"></div>
+  <div class="bday-content">
+    <div style="font-size:2.5rem;animation:floatY 2s ease-in-out infinite">🎂✨🎉</div>
+    <div class="bday-name">Happy Birthday, Peehu! 🌸</div>
+    <div class="bday-sub">With all the love in Harsh's heart, today is your most magical day ever 💕</div>
+
+    <div class="tab-row">
+      <button class="tab-btn active" onclick="showPanel('cake',this)">🎂 Cut Cake</button>
+      <button class="tab-btn" onclick="showPanel('messages',this)">💌 Messages</button>
+      <button class="tab-btn" onclick="showPanel('photos',this)">📸 Our Photos</button>
+    </div>
+
+    <!-- CAKE PANEL -->
+    <div class="panel active" id="panel-cake">
+      <div class="cake-wrap">
+        <div class="cake-svg-wrap" id="cakeSvg" onclick="cutCake()">
+          <svg width="220" height="240" viewBox="0 0 220 240">
+            <ellipse cx="110" cy="200" rx="90" ry="14" fill="#f9c6da"/>
+            <rect x="30" y="120" width="160" height="80" rx="8" fill="#ff85a1"/>
+            <rect x="30" y="120" width="160" height="20" rx="0" fill="#ffb3c6"/>
+            <path d="M45 120 Q55 108 65 120 Q75 108 85 120 Q95 108 105 120 Q115 108 125 120 Q135 108 145 120 Q155 108 165 120 Q175 108 185 120" stroke="white" stroke-width="4" fill="none" opacity=".7"/>
+            <rect x="45" y="70" width="130" height="55" rx="8" fill="#ff4d7d"/>
+            <rect x="45" y="70" width="130" height="18" rx="0" fill="#ff85a1"/>
+            <rect x="60" y="30" width="100" height="45" rx="8" fill="#e83568"/>
+            <rect x="60" y="30" width="100" height="16" rx="0" fill="#ff4d7d"/>
+            <rect x="80" y="8" width="8" height="26" rx="4" fill="#ffd700"/>
+            <rect x="103" y="4" width="8" height="30" rx="4" fill="#ff85a1"/>
+            <rect x="126" y="8" width="8" height="26" rx="4" fill="#a8edea"/>
+            <ellipse cx="84" cy="7" rx="5" ry="7" fill="#ffa500" id="fl1" style="animation:candleFlicker 1s ease-in-out infinite"/>
+            <ellipse cx="107" cy="3" rx="5" ry="7" fill="#ff6b35" id="fl2" style="animation:candleFlicker 1.2s ease-in-out infinite"/>
+            <ellipse cx="130" cy="7" rx="5" ry="7" fill="#ffd700" id="fl3" style="animation:candleFlicker .9s ease-in-out infinite"/>
+            <text x="55" y="105" font-size="10" fill="white" opacity=".8">✦</text>
+            <text x="150" y="105" font-size="10" fill="white" opacity=".8">✦</text>
+            <text x="75" y="58" font-size="8" fill="white" opacity=".7">♡</text>
+            <text x="138" y="60" font-size="8" fill="white" opacity=".7">♡</text>
+          </svg>
+        </div>
+        <div class="cake-hint">Tap the cake to cut it! 🎉</div>
+        <button class="cake-btn" onclick="cutCake()">🎂 Cut the Cake!</button>
+      </div>
+    </div>
+
+    <!-- MESSAGES PANEL -->
+    <div class="panel" id="panel-messages">
+      <div class="msg-grid">
+        <div class="msg-card" data-emoji="💖">
+          <p>"You are the reason I smile every morning. Your eyes hold an entire universe, and I'm lucky to be part of it."</p>
+          <div class="msg-from">— Harsh, always yours</div>
+        </div>
+        <div class="msg-card" data-emoji="🌸">
+          <p>"Peehu, every laugh we share becomes my favourite memory. You make ordinary days feel like magic."</p>
+          <div class="msg-from">— With all my heart</div>
+        </div>
+        <div class="msg-card" data-emoji="🌙">
+          <p>"When the world gets loud, the thought of you is the quiet that calms me. You're my home, Peehu."</p>
+          <div class="msg-from">— Harsh 💕</div>
+        </div>
+        <div class="msg-card" data-emoji="✨">
+          <p>"I fall more in love with you every single day. Happy birthday to the girl who stole my whole heart."</p>
+          <div class="msg-from">— Forever yours</div>
+        </div>
+        <div class="msg-card" data-emoji="🦋">
+          <p>"You are beautiful in ways that words can barely hold. Your smile is my sunshine, always."</p>
+          <div class="msg-from">— Harsh 🌷</div>
+        </div>
+        <div class="msg-card" data-emoji="🎀">
+          <p>"May this birthday bring you all the joy you've given me — and that's an infinite amount, my darling."</p>
+          <div class="msg-from">— Lovingly, Harsh</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHOTOS PANEL -->
+    <div class="panel" id="panel-photos">
+      <div class="photo-grid">
+        <div class="photo-card">
+          <img src="https://i.ibb.co/9kF9sGCK/IMG-20260525-202317.jpg" alt="Peehu" loading="lazy">
+          <div class="photo-compliment"><span>You're absolutely radiant here, Peehu 🌸</span></div>
+        </div>
+        <div class="photo-card">
+          <img src="https://i.ibb.co/Ld3HvJYh/IMG-20260525-202330.jpg" alt="Peehu" loading="lazy">
+          <div class="photo-compliment"><span>That smile lights up every room you walk into ✨</span></div>
+        </div>
+        <div class="photo-card">
+          <img src="https://i.ibb.co/3mj4hkt7/IMG-20260525-211916.jpg" alt="Peehu" loading="lazy">
+          <div class="photo-compliment"><span>So naturally beautiful, Harsh is so lucky 💕</span></div>
+        </div>
+        <div class="photo-card">
+          <img src="https://i.ibb.co/GQRGtr65/IMG-20260525-212027.jpg" alt="Peehu" loading="lazy">
+          <div class="photo-compliment"><span>This moment is pure magic — just like you 🦋</span></div>
+        </div>
+        <div class="photo-card">
+          <img src="https://i.ibb.co/vCdqfw70/IMG-20260525-212052.jpg" alt="Peehu" loading="lazy">
+          <div class="photo-compliment"><span>Your beauty is timeless, inside and out 🌷</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- BURST MODAL -->
+<div id="burstModal">
+  <div class="burst-card">
+    <div class="burst-emoji" id="burstEmoji">🎂</div>
+    <div class="burst-title" id="burstTitle">Happy Birthday!</div>
+    <div class="burst-msg" id="burstMsg">You are so loved!</div>
+    <button class="burst-close" onclick="closeBurst()">Thank you! 💕</button>
+  </div>
+</div>
+
+<script>
+const SECRET = '2626';
+const BIRTHDAY = new Date('2026-05-26T00:00:00');
+
+const cakeSurprises = [
+  {emoji:'🎉',title:'Happy Birthday, Peehu!',msg:'The universe chose today to bless us with you. Harsh loves you more than all the stars in the sky. Make a wish!'},
+  {emoji:'🌸',title:'You Are So Beautiful!',msg:'Every single photo of you is proof that magic is real. Your smile, your eyes, your laugh — everything about you is perfect.'},
+  {emoji:'💖',title:'Harsh loves you!',msg:'From the very first moment, you became my favourite person on this whole earth. Happy birthday, my love!'},
+  {emoji:'🦋',title:'This Year is Yours!',msg:'May this birthday be the start of your most magical chapter yet. With Harsh by your side, nothing is impossible!'},
+  {emoji:'✨',title:'You Light Up My World!',msg:'In every lifetime, in every universe, I would always find you and fall in love with you again. Happy birthday, Peehu!'},
+];
+
+let cakeClickIdx = 0;
+let cakeCut = false;
+
+function checkKey(){
+  const v = document.getElementById('keyInput').value;
+  const err = document.getElementById('keyError');
+  if(v === SECRET){
+    document.getElementById('lockScreen').classList.add('hidden');
+    initApp();
+  } else {
+    err.classList.add('show');
+    document.getElementById('keyInput').style.borderColor='#e8547a';
+    setTimeout(()=>{err.classList.remove('show');document.getElementById('keyInput').style.borderColor='var(--pink)';},2000);
+  }
+}
+document.getElementById('keyInput').addEventListener('keydown',e=>{if(e.key==='Enter')checkKey()});
+
+function initApp(){
+  const now = new Date();
+  if(now >= BIRTHDAY){
+    document.getElementById('birthdayScreen').classList.remove('hidden');
+    launchBgParticles();
+  } else {
+    document.getElementById('countdownScreen').classList.remove('hidden');
+    startCountdown();
+  }
+}
+
+function startCountdown(){
+  function tick(){
+    const now = new Date();
+    const diff = BIRTHDAY - now;
+    if(diff <= 0){
+      document.getElementById('countdownScreen').classList.add('hidden');
+      document.getElementById('birthdayScreen').classList.remove('hidden');
+      launchBgParticles();
+      return;
+    }
+    const d = Math.floor(diff/86400000);
+    const h = Math.floor((diff%86400000)/3600000);
+    const m = Math.floor((diff%3600000)/60000);
+    const s = Math.floor((diff%60000)/1000);
+    document.getElementById('cdDays').textContent = String(d).padStart(2,'0');
+    document.getElementById('cdHours').textContent = String(h).padStart(2,'0');
+    document.getElementById('cdMins').textContent = String(m).padStart(2,'0');
+    document.getElementById('cdSecs').textContent = String(s).padStart(2,'0');
+  }
+  tick();
+  setInterval(tick, 1000);
+}
+
+function showPanel(name, btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  if(btn) btn.classList.add('active');
+}
+
+function cutCake(){
+  if(!cakeCut){
+    cakeCut = true;
+    document.querySelectorAll('#fl1,#fl2,#fl3').forEach(f=>f.style.display='none');
+  }
+  spawnConfetti(80);
+  const s = cakeSurprises[cakeClickIdx % cakeSurprises.length];
+  document.getElementById('burstEmoji').textContent = s.emoji;
+  document.getElementById('burstTitle').textContent = s.title;
+  document.getElementById('burstMsg').textContent = s.msg;
+  document.getElementById('burstModal').classList.add('show');
+  cakeClickIdx++;
+}
+
+function closeBurst(){
+  document.getElementById('burstModal').classList.remove('show');
+}
+
+function spawnConfetti(n){
+  const colors=['#ff85a1','#ffb3c6','#c9a8ff','#ffd700','#a8edea','#ff4d7d','#f9c6da'];
+  for(let i=0;i<n;i++){
+    const el=document.createElement('div');
+    el.className='confetti-piece';
+    el.style.cssText=`left:${Math.random()*100}vw;top:-20px;background:${colors[Math.floor(Math.random()*colors.length)]};width:${6+Math.random()*10}px;height:${6+Math.random()*10}px;border-radius:${Math.random()>.5?'50%':'3px'};animation-duration:${2+Math.random()*3}s;animation-delay:${Math.random()*.8}s;`;
+    document.body.appendChild(el);
+    el.addEventListener('animationend',()=>el.remove());
+  }
+}
+
+function launchBgParticles(){
+  const canvas=document.getElementById('bgCanvas');
+  const ctx=canvas.getContext('2d');
+  let W=window.innerWidth,H=window.innerHeight;
+  canvas.width=W;canvas.height=H;
+  window.addEventListener('resize',()=>{W=window.innerWidth;H=window.innerHeight;canvas.width=W;canvas.height=H});
+  const pts=Array.from({length:35},()=>({
+    x:Math.random()*W,y:Math.random()*H,
+    vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4,
+    r:3+Math.random()*5,
+    c:['#ffb3c6','#c9a8ff','#ffd700','#a8edea','#ff85a1'][Math.floor(Math.random()*5)],
+    o:.3+Math.random()*.5
+  }));
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    pts.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0||p.x>W)p.vx*=-1;
+      if(p.y<0||p.y>H)p.vy*=-1;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=p.c;ctx.globalAlpha=p.o;ctx.fill();
+    });
+    ctx.globalAlpha=1;
+    requestAnimationFrame(draw);
+  }
+  draw();
+  spawnConfetti(60);
+}
+
+['💕','🌸','✨','🎀','💖','🦋','🌷','⭐'].forEach((e,i)=>{
+  const d=document.createElement('div');
+  d.className='floating-emoji';
+  d.textContent=e;
+  d.style.cssText=`left:${10+Math.random()*80}%;top:${10+Math.random()*80}%;animation-delay:${i*0.7}s;animation-duration:${4+Math.random()*3}s`;
+  document.getElementById('lockScreen').appendChild(d);
+});
+</script>
+</body>
+</html>
+HTMLEOF
+echo "Done"
